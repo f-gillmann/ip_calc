@@ -6,7 +6,7 @@ The goal was to create a script that calculates the broadcast address from an IP
 
 ### Two scripts?
 The first script, `bc_calc.sh`, is the original script I wrote for the task.<br>
-The second script, `ip_calc.sh`, is an extended version I made out of boredom. (And no, it doesn't have comments. :D)
+The second script, `ip_calc.sh`, is an extended version I made out of boredom.
 
 ## bc_calc.sh example output:
 ```bash

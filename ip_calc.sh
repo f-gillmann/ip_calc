@@ -13,6 +13,7 @@ ip_to_bin() {
     local IFS='.'
     read -ra octets <<< "$ip"
     for octet in "${octets[@]}"; do
+        # Convert each octet to 8-bit binary and append.
         bin_ip="${bin_ip}$(printf "%08d" "$(echo "obase=2; $octet" | bc)")."
     done
     echo "${bin_ip%?}"
@@ -24,6 +25,7 @@ wildcard_mask() {
     local IFS='.'
     read -ra octets <<< "$snm"
     for octet in "${octets[@]}"; do
+        # Calculate the wildcard octet by subtracting from 255.
         wildcard_ip="${wildcard_ip}$((255 - octet))."
     done
     echo "${wildcard_ip%?}"
@@ -37,6 +39,7 @@ network_address() {
     read -ra ip_octets <<< "$ip"
     read -ra snm_octets <<< "$snm"
     for i in {0..3}; do
+        # Bitwise AND to get the network address.
         network_ip="${network_ip}$((${ip_octets[i]} & ${snm_octets[i]}))."
     done
     echo "${network_ip%?}"
@@ -50,6 +53,7 @@ broadcast_address() {
     read -ra net_octets <<< "$net_addr"
     read -ra wildcard_octets <<< "$wildcard"
     for i in {0..3}; do
+        # Bitwise OR to get the broadcast address.
         broadcast_ip="${broadcast_ip}$((${net_octets[i]} | ${wildcard_octets[i]}))."
     done
     echo "${broadcast_ip%?}"
@@ -57,11 +61,16 @@ broadcast_address() {
 
 num_hosts() {
     local snm_bits=$1
+
+    # Calc. the number of usale hosts.
+    # 2^(32 (subnet bits)) - 2 (bits we can't use for hosts)
     echo "$((2**(32 - snm_bits) - 2))"
 }
 
 network_class() {
     local first_octet=$1
+
+    # Determine network class using the first octet.
     if ((first_octet >= 0 && first_octet <= 127)); then
         printf "Class ${LIGHT_COLOR}A${RESET_COLOR}"
     elif ((first_octet >= 128 && first_octet <= 191)); then
@@ -77,9 +86,14 @@ network_class() {
 
 calculate_and_print() {
     local ip_input="$1"
+
+    # Extract IP address.
     local ip="${ip_input%/*}"
+
+    # Extract subnet mask bits.
     local snm_bits="${ip_input#*/}"
 
+    # Calculate the subnet mask from the bits.
     local mask=$((0xFFFFFFFF << (32 - snm_bits)))
     local snm=$(printf "%d.%d.%d.%d" \
         $(( (mask >> 24) & 0xFF )) \
@@ -100,12 +114,14 @@ calculate_and_print() {
     read -ra bc_octets <<< "$broadcast"
 
 
+    # Calculate the first usable host address.
     if [ "${net_octets[3]}" -lt 255 ]; then
         net_octets[3]=$((net_octets[3] + 1))
     fi
     host_min="${net_octets[0]}.${net_octets[1]}.${net_octets[2]}.${net_octets[3]}"
 
 
+    # Calculate the last usable host address.
     if [ "${bc_octets[3]}" -gt 0 ]; then
         bc_octets[3]=$((bc_octets[3] - 1))
     fi
@@ -123,7 +139,6 @@ calculate_and_print() {
     printf "${PREFIX} Hosts/Net  ➜  %s${NEWLINE}" "$num_of_hosts"
 }
 
-# Validate input and call the function
 if [[ $# -eq 1 ]]; then
     ip_input="$1"
     if [[ $ip_input =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}/[0-9]{1,2}$ ]]; then
