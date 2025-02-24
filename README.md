@@ -1,13 +1,11 @@
 # ip_calc
 
-This repository is the result of a task I received in school.
-
+This repository is the result of a task I received in school.<br>
 The goal was to create a script that calculates the broadcast address from an IP address and subnet mask.
 
 
 ### Two scripts?
-The first script, `bc_calc.sh`, is the original script I wrote for the task.
-
+The first script, `bc_calc.sh`, is the original script I wrote for the task.<br>
 The second script, `ip_calc.sh`, is an extended version I made out of boredom. (And no, it doesn't have comments. :D)
 
 ## bc_calc.sh example output:
