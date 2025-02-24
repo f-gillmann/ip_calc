@@ -88,10 +88,10 @@ done
 bin_bc_ip_result="${bin_bc_ip:0:8}.${bin_bc_ip:8:8}.${bin_bc_ip:16:8}.${bin_bc_ip:24:8}"
 
 # Convert binary broadcast IP back to decimal.
-bc_ip_o1=$((2#${bin_bc_ip:0:8}))
-bc_ip_o2=$((2#${bin_bc_ip:8:8}))
-bc_ip_o3=$((2#${bin_bc_ip:16:8}))
-bc_ip_o4=$((2#${bin_bc_ip:24:8}))
+bc_ip_o1=$((2#${bin_bc_ip:0:8}))  # 11000000 -> 192
+bc_ip_o2=$((2#${bin_bc_ip:8:8}))  # 10101000 -> 168
+bc_ip_o3=$((2#${bin_bc_ip:16:8})) # 00000001 ->   1
+bc_ip_o4=$((2#${bin_bc_ip:24:8})) # 11111111 -> 255
 
 bc_ip_result="${bc_ip_o1}.${bc_ip_o2}.${bc_ip_o3}.${bc_ip_o4}"
 
