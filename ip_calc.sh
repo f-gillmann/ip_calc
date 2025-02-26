@@ -12,9 +12,9 @@ ip_to_bin() {
     local bin_ip=""
     local IFS='.'
     read -ra octets <<< "$ip"
-    for octet in "${octets[@]}"; do
+    for i in {0..3}; do
         # Convert each octet to 8-bit binary and append.
-        bin_ip="${bin_ip}$(printf "%08d" "$(echo "obase=2; $octet" | bc)")."
+        bin_ip="${bin_ip}$(printf "%08d" "$(echo "obase=2; ${octets[i]}" | bc)")."
     done
     echo "${bin_ip%?}"
 }
@@ -24,9 +24,9 @@ wildcard_mask() {
     local wildcard_ip=""
     local IFS='.'
     read -ra octets <<< "$snm"
-    for octet in "${octets[@]}"; do
+    for i in {0..3}; do
         # Calculate the wildcard octet by subtracting from 255.
-        wildcard_ip="${wildcard_ip}$((255 - octet))."
+        wildcard_ip="${wildcard_ip}$((255 - ${octets[i]}))."
     done
     echo "${wildcard_ip%?}"
 }
